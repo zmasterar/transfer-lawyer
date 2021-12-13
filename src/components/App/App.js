@@ -30,7 +30,7 @@ function App() {
         const accountAmount = parseFloat(form.accountAmount) || 0;
         console.log('accountAmount', accountAmount);
         const amount = form.iva ? accountAmount / 1.31 : accountAmount / 1.1;
-        setForm({ ...form, amount });
+        setForm(f => ({ ...f, amount }));
         console.log('amount', amount);
         setJ(amount * 0.08);
         setK(amount * 0.1);
