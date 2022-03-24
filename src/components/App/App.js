@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import NumberFormat from "react-number-format";
+import { DuplicateIcon} from '@heroicons/react/outline'
+import useCopyToClipboard from "../../hooks/useCopyToClipboard"
 import "./app.css";
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [controlAmount, setControlAmount] = useState(0);
   const [partialTransfer, setpartialTransfer] = useState(false);
+  const [transferText, setTransferText] = useState("");
+  const [copyToClipboard, { success }] = useCopyToClipboard()
 
   const toCurrency = (number) =>
     new Intl.NumberFormat("es-AR", {
@@ -83,6 +87,13 @@ function App() {
     j,
     k,
   ]);
+
+  useEffect(() => {
+    setTransferText(
+      form.amount 
+        ? `(${toCurrency(form.amount).replace(" ","")} por honorarios, menos ${toCurrency(j)} por el 8% de aportes de Ley 6.059${form.iva ? `, más ${toCurrency(iva)} por el 21% de IVA)` : ")"}`
+        : ""
+    )},[form.amount, form.iva, j, iva])
 
   const togglePartialTransfer = () => {
     setForm({
@@ -175,10 +186,22 @@ function App() {
           <div className="px-4 py-1">
             {form.amount && toCurrency(totalAmount)}
           </div>
+          {transferText && (
+            <div className="text-center col-span-2 mt-2">
+              <p >{transferText}</p>
+              <button onClick={() => copyToClipboard(transferText, {format: "text/plain"})}>
+              <div className="flex font-bold mt-3">
+                <div className={`flex items-center ${success ? "hidden" : ""}`}><DuplicateIcon className="h-4 w-4 mr-1 text-sky-500"/>Copiar texto</div>
+                <div className={`flex items-center ${!success ? "hidden" : ""}`}>¡Texto copiado!</div>
+              </div>
+              </button>
+              
+            </div>
+          )}
+          
           <div className="text-center col-span-2 mt-4 text-2xl font-bold">
             CONTROL
           </div>
-
           <div className="font-bold flex justify-end items-center">
             Monto en cuenta{" "}
           </div>
