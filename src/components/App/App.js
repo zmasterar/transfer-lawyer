@@ -20,9 +20,9 @@ function App() {
 
   const toCurrency = (number) =>
     new Intl.NumberFormat("es-AR", {
-      style: "currency",
-      currency: "ARS",
-    }).format(number);
+        style: "currency",
+        currency: "ARS",
+      }).format(number).replace(/\s/, "")
 
   useEffect(() => {
     if (partialTransfer) {
